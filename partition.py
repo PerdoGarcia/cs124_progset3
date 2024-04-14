@@ -8,3 +8,8 @@ def karmarkar_karp(arr):
         arr.pop(-2)
     return arr[0]
 
+
+def main():
+    # Read input
+    sys.arvg = sys.argv[1]
+
