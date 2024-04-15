@@ -75,7 +75,7 @@ def simulated_annealing(arr):
         s_1p[n_1] = -s_1p[n_1]
         s_1p[n_2] = -s_1p[n_2]
         
-        if residual(s_1p, arr) < residual(s, arr):
+        if (s_1p, arr) < residual(s, arr):
             if s_1p == 0:
                 return s_1p
             s = s_1p
@@ -122,5 +122,5 @@ def main():
         print(simulated_annealing(new_array))
     
     
-    
+
 
