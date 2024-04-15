@@ -8,16 +8,27 @@ max_iter = 25000
 def residual(s, arr):
     return abs(sum([s[i]*arr[i] for i in range(len(arr))]))
 
-
-
 # Karmarkar-Karp algorithm
 def karmarkar_karp(arr):
+    # pq needed
+    
+    pq = []
     while len(arr) > 1:
         arr.sort()
         arr[-1] = arr[-1] - arr[-2]
         arr.pop(-2)
     return arr[0]
 
+def prepartition(arr):
+    new_arr = [0] * len(arr)
+    
+    for j in range(1,len(arr)+1):
+        d = 1
+        for i in range(len(arr)):
+            if new_arr[i] == 0:
+                new_arr[i] = d
+                d = -d
+    return new_arr
 
 
 def repeated_random(arr):
@@ -37,9 +48,14 @@ def hill_climbing(arr):
     
     for _ in range(max_iter):
         # define neighbors
-        n = random.choice(range(len(arr)))
+        n_1 = random.choice(range(len(arr)))
+        n_2 = random.choice(range(len(arr)))
+        while n_1 != n_2:
+            n_2 = random.choice(range(len(arr)))
         s_new = s
-        s_new[n] = -s_new[n]
+        s_new[n_1] = -s_new[n_1]
+        s_new[n_2] = -s_new[n_2]
+        
         if residual(s_new, arr) < residual(s,arr):
             s = s_new
             if s == 0:
@@ -48,12 +64,16 @@ def hill_climbing(arr):
 
 def simulated_annealing(arr):
     s = [s.append(random.choice([1, -1])) for _ in range(len(arr))]
-    
     s_2p = s
     
     for i in max_iter:
-        n = random.choice(range(len(arr)))
+        n_1 = random.choice(range(len(arr)))
+        n_2 = random.choice(range(len(arr)))
+        while n_1 != n_2:
+            n_2 = random.choice(range(len(arr)))
         s_1p = s
+        s_1p[n_1] = -s_1p[n_1]
+        s_1p[n_2] = -s_1p[n_2]
         
         if residual(s_1p, arr) < residual(s, arr):
             if s_1p == 0:
@@ -63,13 +83,13 @@ def simulated_annealing(arr):
             temp = 10 ** 10 * (.8) ** (math.floor(i / 300))
             prob = math.exp((residual(s, arr) - residual(s_1p, arr)) / temp)
             if random.random() < prob:
-                s_2p = s
+                s = s_1p
         if residual(s, arr) < residual(s_2p, arr):
             s_2p = s
             if s == 0:
                 return s
-    return s
 
+    return s_2p
 
 def prepart_rr(arr):
     pass
@@ -80,6 +100,7 @@ def prepart_hc(arr):
 def prepart_sa(arr):
     pass
 
+    
 
 def main():
     # Read input
