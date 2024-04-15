@@ -90,16 +90,6 @@ def simulated_annealing(arr):
                 return s
 
     return s_2p
-
-def prepart_rr(arr):
-    pass
-
-def prepart_hc(arr):
-    pass
-
-def prepart_sa(arr):
-    pass
-
     
 
 def main():
@@ -122,11 +112,14 @@ def main():
     if algorithm == 3:
         print(simulated_annealing(array))
     if algorithm == 11:
-        print(prepart_rr(array))
+        new_array = prepartition(array)
+        print(repeated_random(new_array))
     if algorithm == 12:
-        print(prepart_hc(array))
+        new_array = prepartition(array)
+        print(hill_climbing(new_array))
     if algorithm == 13:
-        print(prepart_sa(array))
+        new_array = prepartition(array)
+        print(simulated_annealing(new_array))
     
     
     
