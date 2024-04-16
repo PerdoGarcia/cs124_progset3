@@ -42,8 +42,6 @@ def repeated_random(arr):
         s_new_residue = residual(s_new, arr)
         if s_new_residue < s_residue:
             s_residue = s_new_residue
-            if s_residue == 0:
-                return s_residue
     return s_residue
     
 
@@ -53,19 +51,16 @@ def hill_climbing(arr):
     for _ in range(max_iter):
         # define neighbors
         n_1 = random.choice(range(len(arr)))
-        n_2 = random.choice(range(len(arr)))
-        while n_1 != n_2:
-            n_2 = random.choice(range(len(arr)))
+        # n_2 = random.choice(range(len(arr)))
+        # while n_1 != n_2:
+        #     n_2 = random.choice(range(len(arr)))
         s_new = s
         s_new[n_1] = -s_new[n_1]
-        s_new[n_2] = -s_new[n_2]
-        
+        # s_new[n_2] = -s_new[n_2]
         s_new_residue = residual(s_new, arr)
         
         if s_new_residue < s_residue:
             s_residue = s_new_residue
-            if s_residue == 0:
-                return s_residue
     return s_residue
 
 def simulated_annealing(arr):
@@ -75,14 +70,14 @@ def simulated_annealing(arr):
     
     for i in max_iter:
         n_1 = random.choice(range(len(arr)))
-        n_2 = random.choice(range(len(arr)))
+        # n_2 = random.choice(range(len(arr)))
         
-        while n_1 != n_2:
-            n_2 = random.choice(range(len(arr)))
+        # while n_1 != n_2:
+        #     n_2 = random.choice(range(len(arr)))
             
         s_1p = s
         s_1p[n_1] = -s_1p[n_1]
-        s_1p[n_2] = -s_1p[n_2]
+        # s_1p[n_2] = -s_1p[n_2]
         s_1p_residue = residual(s_1p, arr)
         
         if s_1p_residue < s_residue:
@@ -100,8 +95,6 @@ def simulated_annealing(arr):
         s_2p_residue = residual(s_2p, arr)
         if s_residue < s_2p_residue:
             s_2p_residue = s_residue
-            if s_2p == 0:
-                return s_2p
 
     return s_2p_residue
     
