@@ -68,7 +68,7 @@ def simulated_annealing(arr):
     s_2p = s
     s_residue = residual(s, arr)
     
-    for i in max_iter:
+    for i in range(max_iter):
         n_1 = random.choice(range(len(arr)))
         # n_2 = random.choice(range(len(arr)))
         
