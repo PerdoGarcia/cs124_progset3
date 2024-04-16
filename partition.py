@@ -6,7 +6,8 @@ import math
 max_iter = 25000
 
 def residual(s, arr):
-    return abs(sum([s[i]*arr[i] for i in range(len(arr))]))
+    residue = abs(sum([s[i]*arr[i] for i in range(len(arr))]))
+    return residue
 
 # Karmarkar-Karp algorithm
 def karmarkar_karp(arr):
@@ -32,11 +33,12 @@ def prepartition(arr):
 
 
 def repeated_random(arr):
-    s = [s.append(random.choice([1, -1])) for _ in range(len(arr))]
-    
+    if sum(arr) % 2 != 0:
+        odd = True
+    s = [random.choice([1, -1]) for _ in range(len(arr))]
     for _ in range(max_iter):
         s_new = [random.choice([1, -1]) for _ in range(len(arr))]
-        if residual(s_new, arr) < residual(s,arr):
+        if residual(s_new, arr) <= residual(s,arr):
             s = s_new
             if s == 0:
                 return s
@@ -44,7 +46,7 @@ def repeated_random(arr):
     
 
 def hill_climbing(arr):
-    s = [s.append(random.choice([1, -1])) for _ in range(len(arr))]
+    s = [random.choice([1, -1]) for _ in range(len(arr))]
     
     for _ in range(max_iter):
         # define neighbors
@@ -63,7 +65,7 @@ def hill_climbing(arr):
     return s
 
 def simulated_annealing(arr):
-    s = [s.append(random.choice([1, -1])) for _ in range(len(arr))]
+    s = [random.choice([1, -1]) for _ in range(len(arr))]
     s_2p = s
     
     for i in max_iter:
@@ -95,14 +97,14 @@ def simulated_annealing(arr):
 def main():
     # Read input
     flag = sys.argv[1]
-    algorithm = sys.argv[2]
+    algorithm = int(sys.argv[2])
     input_file = open(sys.argv[3], "r")
     
     array = []
     for line in (input_file):
         array.append(int(line))
-        
-    
+   
+    # Call the appropriate algorithm
     if algorithm == 0:
         print(karmarkar_karp(array))
     if algorithm == 1:
@@ -120,7 +122,6 @@ def main():
     if algorithm == 13:
         new_array = prepartition(array)
         print(simulated_annealing(new_array))
-    
-    
+    return
 
-
+main()
