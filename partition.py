@@ -22,8 +22,6 @@ def karmarkar_karp(arr):
     return arr[0]
 
 def repeated_random(arr):
-    if sum(arr) % 2 != 0:
-        odd = True
     s = [random.choice([1, -1]) for _ in range(len(arr))]
     s_residue = residual(s, arr)
     for _ in range(max_iter):
@@ -61,8 +59,6 @@ def simulated_annealing(arr):
         s_1p_residue = residual(s_1p, arr)
         
         if s_1p_residue < s_residue:
-            if s_1p_residue == 0:
-                return s_1p_residue
             s_residue = s_1p_residue
             
         else:
@@ -80,47 +76,73 @@ def simulated_annealing(arr):
     
 def prepartition(arr):
     n = len(arr)
-    P = [random.randint(1,n) for _ in range(n)]
-    n = max(P) 
-    A_prime = [0] * (n + 1)
+    P = [random.randint(0,n-1) for _ in range(n)]
+    A_prime = [0] * n
 
-    for i in range(len(arr)):
+    for i in range(n):
         A_prime[P[i]] += arr[i]     
-    print(A_prime)
-    return A_prime
+    return A_prime, P
 
-def nb_partition(p):
-    new_p = p
+def nb_partition(part_s, p):
+    new_p = p.copy()
     i = random.choice(range(len(p)))
     j = random.choice(range(len(p)))
-    while i != j:
+    
+    while i == j:
         j = random.choice(range(len(p)))
     new_p[i] = j
+    size = len(part_s)
+    A_prime = [0] * size
+    for i in range(size):
+        A_prime[new_p[i]] += part_s[i]
     
-    return new_p
+    return A_prime, new_p
     
 def pp_rr(arr):
-    s = [random.choice([1, -1]) for _ in range(len(arr))]
-    part_s = prepartition(arr)
+    part_s, _ = prepartition(arr)
     
     for _ in range(max_iter):   
-        part_s_new = prepartition(arr)
+        part_s_new, _ = prepartition(arr)
         if karmarkar_karp(part_s_new) < karmarkar_karp(part_s):
             part_s = part_s_new
     return karmarkar_karp(part_s)
 
 def pp_hc(arr):
-    s = [random.choice([1, -1]) for _ in range(len(arr))]
-    part_s = prepartition(arr)
+    # s is going to be partitioned solution, with the following structure P
+    s, P = prepartition(arr)
     
     for _ in range(max_iter):
-        part_s_new = prepartition(arr)
+        # partition arr not s, because is our candidate s, 
+        # but arr needs to be saved for the changes in P, we can't go from P -> P' directly
+        new_s, new_p = nb_partition(arr, P)
+        if karmarkar_karp(new_s) < karmarkar_karp(s):
+            s = new_s
+            P = new_p
         
-        
-        if karmarkar_karp(part_s_new) < karmarkar_karp(part_s):
-            part_s = part_s_new
-    return karmarkar_karp(part_s)
+    return karmarkar_karp(s)
 
+def pp_sa(arr):
+    s, P = prepartition(arr)
+    s_2p, s_2p = s, P
+    
+    for i in range(max_iter):
+        new_s, new_p = nb_partition(arr, P)
+        kk_new_s = karmarkar_karp(new_s)
+        kk_s = karmarkar_karp(s)
+        if kk_new_s < kk_s:
+            s = new_s
+            P = new_p
+        else:
+            temp = 10 ** 10 * (.8) ** (math.floor(i / 300))
+            prob = math.exp((kk_s - kk_new_s) / temp)
+            if random.random() < prob:
+                s = new_s
+                P = new_p
+        kk_opt = karmarkar_karp(s_2p)
+        if kk_s < kk_opt:
+            s_2p = s
+            s_2p = P
+    return kk_opt
 
 def main():
     # Read input
@@ -142,14 +164,11 @@ def main():
     if algorithm == 3:
         print(simulated_annealing(array))
     if algorithm == 11:
-        new_array = prepartition(array)
-        print(repeated_random(new_array))
+        print(pp_rr(array))
     if algorithm == 12:
-        new_array = prepartition(array)
-        print(hill_climbing(new_array))
+        print(pp_hc(array))
     if algorithm == 13:
-        new_array = prepartition(array)
-        print(simulated_annealing(new_array))
+        print(pp_sa(array))
     return
 
 main()
