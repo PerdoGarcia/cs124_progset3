@@ -122,27 +122,30 @@ def pp_hc(arr):
     return karmarkar_karp(s)
 
 def pp_sa(arr):
-    s, P = prepartition(arr)
-    s_2p, s_2p = s, P
+    S, P = prepartition(arr)
+    s_2p = S
+    kk_s = karmarkar_karp(S)
     
     for i in range(max_iter):
-        new_s, new_p = nb_partition(arr, P)
-        kk_new_s = karmarkar_karp(new_s)
-        kk_s = karmarkar_karp(s)
-        if kk_new_s < kk_s:
-            s = new_s
-            P = new_p
+        S_new, P_new = nb_partition(arr, P)
+        kk_s_new = karmarkar_karp(S_new)
+        if kk_s_new < kk_s:
+            S = S_new
+            P = P_new
+            kk_s = kk_s_new
         else:
             temp = 10 ** 10 * (.8) ** (math.floor(i / 300))
-            prob = math.exp((kk_s - kk_new_s) / temp)
+            prob = math.exp((kk_s - kk_s_new) / temp)
             if random.random() < prob:
-                s = new_s
-                P = new_p
-        kk_opt = karmarkar_karp(s_2p)
-        if kk_s < kk_opt:
-            s_2p = s
-            s_2p = P
-    return kk_opt
+                S = S_new
+                P = P_new
+                kk_s = kk_s_new
+        if kk_s < karmarkar_karp(s_2p):
+            s_2p = S
+            
+    return karmarkar_karp(s_2p)
+        
+    
 
 def main():
     # Read input
