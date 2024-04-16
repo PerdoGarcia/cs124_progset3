@@ -21,15 +21,15 @@ def karmarkar_karp(arr):
     return arr[0]
 
 def prepartition(arr):
-    new_arr = [0] * len(arr)
+    n = len(arr)
+    P = [random.randint(1,n) for _ in range(n)]
+    n = max(P) 
+    A_prime = [0] * (n + 1)
+
+    for i in range(len(arr)):
+        A_prime[P[i]] += arr[i]     
     
-    for j in range(1,len(arr)+1):
-        d = 1
-        for i in range(len(arr)):
-            if new_arr[i] == 0:
-                new_arr[i] = d
-                d = -d
-    return new_arr
+    return A_prime[1:]
 
 
 def repeated_random(arr):
