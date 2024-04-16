@@ -36,18 +36,20 @@ def repeated_random(arr):
     if sum(arr) % 2 != 0:
         odd = True
     s = [random.choice([1, -1]) for _ in range(len(arr))]
+    s_residue = residual(s, arr)
     for _ in range(max_iter):
         s_new = [random.choice([1, -1]) for _ in range(len(arr))]
-        if residual(s_new, arr) <= residual(s,arr):
-            s = s_new
-            if s == 0:
-                return s
-    return s
+        s_new_residue = residual(s_new, arr)
+        if s_new_residue < s_residue:
+            s_residue = s_new_residue
+            if s_residue == 0:
+                return s_residue
+    return s_residue
     
 
 def hill_climbing(arr):
     s = [random.choice([1, -1]) for _ in range(len(arr))]
-    
+    s_residue = residual(s, arr)
     for _ in range(max_iter):
         # define neighbors
         n_1 = random.choice(range(len(arr)))
@@ -58,40 +60,50 @@ def hill_climbing(arr):
         s_new[n_1] = -s_new[n_1]
         s_new[n_2] = -s_new[n_2]
         
-        if residual(s_new, arr) < residual(s,arr):
-            s = s_new
-            if s == 0:
-                return s
-    return s
+        s_new_residue = residual(s_new, arr)
+        
+        if s_new_residue < s_residue:
+            s_residue = s_new_residue
+            if s_residue == 0:
+                return s_residue
+    return s_residue
 
 def simulated_annealing(arr):
     s = [random.choice([1, -1]) for _ in range(len(arr))]
     s_2p = s
+    s_residue = residual(s, arr)
     
     for i in max_iter:
         n_1 = random.choice(range(len(arr)))
         n_2 = random.choice(range(len(arr)))
+        
         while n_1 != n_2:
             n_2 = random.choice(range(len(arr)))
+            
         s_1p = s
         s_1p[n_1] = -s_1p[n_1]
         s_1p[n_2] = -s_1p[n_2]
+        s_1p_residue = residual(s_1p, arr)
         
-        if (s_1p, arr) < residual(s, arr):
-            if s_1p == 0:
-                return s_1p
-            s = s_1p
+        if s_1p_residue < s_residue:
+            if s_1p_residue == 0:
+                return s_1p_residue
+            s_residue = s_1p_residue
+            
         else:
+            # flip coin with prob T(iter)
             temp = 10 ** 10 * (.8) ** (math.floor(i / 300))
-            prob = math.exp((residual(s, arr) - residual(s_1p, arr)) / temp)
+            prob = math.exp((s_residue - s_1p_residue) / temp)
             if random.random() < prob:
-                s = s_1p
-        if residual(s, arr) < residual(s_2p, arr):
-            s_2p = s
-            if s == 0:
-                return s
+                s_residue = s_1p_residue
+        # 2p
+        s_2p_residue = residual(s_2p, arr)
+        if s_residue < s_2p_residue:
+            s_2p_residue = s_residue
+            if s_2p == 0:
+                return s_2p
 
-    return s_2p
+    return s_2p_residue
     
 
 def main():
